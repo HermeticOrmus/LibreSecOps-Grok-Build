@@ -22,7 +22,15 @@ Never copy Claude plugin / agent / command totals into this inventory. Upstream 
 
 This repo now: **3 melted skills**, **4 stub skills**, **1 stub agent**.
 
-Dogfood copies of every skill live at `.grok/skills/<name>/SKILL.md` and must match `skills/<name>/SKILL.md`.
+Where they live: melted skills in `plugins/libre-secops-grok/skills/<name>/SKILL.md` (the plugin installs them); stubs in `stubs/<name>/SKILL.md` (nothing installs them); the agent in `AGENTS/secops-orchestrator.md`.
+
+Dogfood copies of every skill live at `.grok/skills/<name>/SKILL.md` and must match the canonical file above. CI checks it.
+
+## Pack entries (installed, not melted)
+
+The marketplace also lists every plugin of [LibreSecOps-Claude-Code](https://github.com/HermeticOrmus/LibreSecOps-Claude-Code) as a remote entry: **33 entries**, all pinned to one pack commit (the `sha` in `.grok-plugin/marketplace.json`). Grok reads those plugin folders as they are. They are not counted in the melted inventory above. `scripts/pin-pack.sh` re-pins them; CI fails when the pack gains or loses a plugin.
+
+Three of them (`penetration-testing`, `red-team-operations`, `bug-bounty-methodology`) are written for authorized offensive engagements. Their pack descriptions scope them to authorized assessments, programs and engagements. The defensive-only rule binds the melted skills in this repo.
 
 ## Suite
 

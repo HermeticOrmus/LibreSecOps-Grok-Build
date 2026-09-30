@@ -8,43 +8,79 @@ Gold Hat: [GOLD_HAT.md](./GOLD_HAT.md) — empower or extract? Teach the control
 
 ## Prerequisites
 
-- `git`
-- Grok Build installed and able to see skills under `.grok/skills/` or `~/.grok/skills/`
+- Grok Build (`grok --version` prints a version)
+- `git` and `jq` for the clone paths and the install-everything loop
 - A service or repo you own, **or** this repo as the working tree (authorized only)
 
 ## Layout this file assumes
 
 Verified against this repository (do not invent extra folders):
 
-```
-skills/<name>/SKILL.md                 # canonical skill bodies (copy these)
-AGENTS/secops-orchestrator.md          # stub coordinator
+```text
+plugins/libre-secops-grok/                        # the Grok-native plugin
+plugins/libre-secops-grok/skills/<name>/SKILL.md  # melted skill bodies (copy these for the manual path)
+stubs/<name>/SKILL.md                             # stub cues; not installed
+AGENTS/secops-orchestrator.md                     # stub coordinator
 docs/DEPTH_MATRIX.md
 docs/MELT_RULES.md
-.grok/skills/<name>/SKILL.md           # dogfood copy; must match skills/
-.grok/plugins/libresecops-core/        # plugin stub; not required for first run
+.grok-plugin/marketplace.json                     # the plugin + every pack plugin, pinned
+.grok/skills/<name>/SKILL.md                      # dogfood copy of the plugin skills and stubs
+stubs/libresecops-core/                           # v0 plugin bundle stub, kept as the record
 ```
 
-Melted (usable now): `skills/threat-model-lite/SKILL.md`, `skills/dependency-audit/SKILL.md`, `skills/secrets-scan/SKILL.md`.
+Melted (usable now): `threat-model-lite`, `dependency-audit`, `secrets-scan`, in `plugins/libre-secops-grok/skills/`.
 Still stubs: `secure-defaults`, `access-review`, `incident-runbook`, `defensive-logging`, plus the orchestrator. Honest table: [docs/DEPTH_MATRIX.md](./docs/DEPTH_MATRIX.md).
 
 ## Install (pick one)
 
-### A. Dogfood this repo (fastest)
+### A. Marketplace (recommended)
+
+```bash
+grok plugin marketplace add HermeticOrmus/LibreSecOps-Grok-Build
+grok plugin install libre-secops-grok@libre-secops-grok --trust
+grok plugin details libre-secops-grok
+```
+
+Grok installs a plugin only with `--trust`, because a plugin can run hooks, MCP servers and skills on your machine. Without it, `grok plugin install` stops and asks you to re-run with the flag.
+
+The same marketplace lists every [LibreSecOps-Claude-Code](https://github.com/HermeticOrmus/LibreSecOps-Claude-Code) plugin, pinned to one commit of the pack. Install the ones your work needs by name:
+
+```bash
+grok plugin install threat-modeling@libre-secops-grok --trust
+grok plugin install supply-chain-security@libre-secops-grok --trust
+```
+
+Or install every entry:
+
+```bash
+for p in $(grok plugin list --json --available | jq -r '.[] | select(.marketplace == "libre-secops-grok" and .status == "available") | .name'); do
+  grok plugin install "$p@libre-secops-grok" --trust
+done
+```
+
+Every entry includes the pack plugins written for authorized offensive work (`penetration-testing`, `red-team-operations`, `bug-bounty-methodology`). Install those only when you hold written authorization for the target; the loop above installs them too.
+
+`libre-secops-hooks` is format-compatible with Grok, but its behavior inside a Grok session is not verified yet (see [LEDGER.md](./LEDGER.md)). Skip it if you only want skills and agents.
+
+To pick up a new pin later: `grok plugin marketplace update`, then `grok plugin update`.
+
+### B. Dogfood this repo
 
 ```bash
 git clone https://github.com/HermeticOrmus/LibreSecOps-Grok-Build.git
 cd LibreSecOps-Grok-Build
-# Skills are already at .grok/skills/ — open this folder in Grok Build.
+# A copy of the skills and stubs is already at .grok/skills/. Open this folder in Grok Build.
 ```
 
-### B. Install into your project
+### C. Copy into your project
+
+The v0 path, for a project that should carry the skill files itself.
 
 ```bash
 git clone https://github.com/HermeticOrmus/LibreSecOps-Grok-Build.git ~/LibreSecOps-Grok-Build
 cd /path/to/your-project
 mkdir -p .grok/skills
-cp -R ~/LibreSecOps-Grok-Build/skills/* .grok/skills/
+cp -R ~/LibreSecOps-Grok-Build/plugins/libre-secops-grok/skills/* .grok/skills/
 ```
 
 Confirm the copy landed:
@@ -56,17 +92,21 @@ test -f .grok/skills/secrets-scan/SKILL.md
 ls .grok/skills
 ```
 
-You should see seven skill directories, matching `skills/` in this repo.
+You should see three skill directories, matching `plugins/libre-secops-grok/skills/` in this repo. The stubs are not copied: they are pointers to pack plugins, not skills.
 
-### C. User-global
+### D. User-global copy
 
 ```bash
 git clone https://github.com/HermeticOrmus/LibreSecOps-Grok-Build.git ~/LibreSecOps-Grok-Build
 mkdir -p ~/.grok/skills
-cp -R ~/LibreSecOps-Grok-Build/skills/* ~/.grok/skills/
+cp -R ~/LibreSecOps-Grok-Build/plugins/libre-secops-grok/skills/* ~/.grok/skills/
 ```
 
-Same three `test -f` checks as B, under `~/.grok/skills/`.
+Same three `test -f` checks as C, under `~/.grok/skills/`.
+
+### Upgrading from v0
+
+If you copied `skills/*` into a project or `~/.grok/skills/`, that copy holds all seven folders, stubs included. Remove the four stub folders (`secure-defaults`, `access-review`, `incident-runbook`, `defensive-logging`) from the copy, or replace the copy with path A so updates arrive through `grok plugin update`.
 
 ### Optional orchestrator (still a stub)
 
@@ -90,7 +130,7 @@ You used melted LibreSecOps depth on Grok — not a Claude paste, not a fake plu
 
 ## Smoke checklist
 
-- [ ] The three melted skill files exist at the install path you chose
+- [ ] `grok plugin list` shows `libre-secops-grok` (path A), or the three melted skill files exist at the copy path you chose (C or D)
 - [ ] Grok can see `threat-model-lite`, `dependency-audit`, `secrets-scan`
 - [ ] One threat model with job, boundaries, ranked controls (no attack procedure)
 - [ ] One dependency note with versions and next actions (or explicit unverified)
