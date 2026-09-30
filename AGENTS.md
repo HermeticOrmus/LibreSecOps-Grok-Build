@@ -7,7 +7,7 @@
 
 ## How to use this suite
 
-1. Install skills (see [QUICK_START.md](./QUICK_START.md)).
+1. Install the `libre-secops-grok` plugin, plus the pack plugins you need, from this repo's marketplace (see [QUICK_START.md](./QUICK_START.md)).
 2. Keep Reality OS as the global doctrine layer.
 3. Use melted skills for a first defensive pass (`threat-model-lite`, `dependency-audit`, `secrets-scan`). Use `AGENTS/secops-orchestrator.md` when you want the coordinator — it is still a stub.
 4. Pair with LibreDevOps for CI/IaC dogfood.
@@ -18,7 +18,7 @@
 |-------|------|------|--------|
 | secops-orchestrator | `AGENTS/secops-orchestrator.md` | Coordinates threat model, defaults, deps, secrets, access, logging into one defensive pass | stub |
 
-Melted specialists: `threat-model-lite`, `dependency-audit`, `secrets-scan`. Still stubs: `secure-defaults`, `access-review`, `defensive-logging`, `incident-runbook`. Honest table: [docs/DEPTH_MATRIX.md](./docs/DEPTH_MATRIX.md).
+Melted specialists: `threat-model-lite`, `dependency-audit`, `secrets-scan`, shipped as the `libre-secops-grok` plugin. Still stubs: `secure-defaults`, `access-review`, `defensive-logging`, `incident-runbook`, in [stubs/](./stubs/), each naming the pack plugin with the real depth. The orchestrator is a stub that nothing installs. Honest table: [docs/DEPTH_MATRIX.md](./docs/DEPTH_MATRIX.md).
 
 ## Liquid Gold
 
