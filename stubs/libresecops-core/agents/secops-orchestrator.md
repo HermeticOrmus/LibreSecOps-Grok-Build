@@ -31,4 +31,4 @@ Leftovers that belong to a stub: name the stub. Do not write a fake full audit.
 
 ## Suite
 
-Doctrine: [grok-build-reality-os](https://github.com/HermeticOrmus/grok-build-reality-os). Gold Hat: [GOLD_HAT.md](../../../../GOLD_HAT.md). Sibling Libre*-Grok-Build packs: [README suite footer](../../../../README.md).
+Doctrine: [grok-build-reality-os](https://github.com/HermeticOrmus/grok-build-reality-os). Gold Hat: [GOLD_HAT.md](../../../GOLD_HAT.md). Sibling Libre*-Grok-Build packs: [README suite footer](../../../README.md).
