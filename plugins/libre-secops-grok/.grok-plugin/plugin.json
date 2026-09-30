@@ -1,0 +1,11 @@
+{
+  "name": "libre-secops-grok",
+  "version": "1.0.0",
+  "description": "Grok-native LibreSecOps skills, defensive only: a lightweight threat model, a dependency risk audit, and a secrets scan that never prints a value. Each has measurable checks, a worked example, and an output shape.",
+  "author": {
+    "name": "Diego Bodart",
+    "url": "https://github.com/HermeticOrmus"
+  },
+  "repository": "https://github.com/HermeticOrmus/LibreSecOps-Grok-Build",
+  "license": "MIT"
+}
